@@ -39,8 +39,7 @@ export function IphoneDemo(props: {
 	return (
 		<div className="mx-auto w-full">
 			<div className="flex justify-center">
-				<div className="rounded-[3.2rem] border border-white/30 bg-white/20 p-6 backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.12)]">
-					{/* ✅ fixed realistic proportions */}
+				<div className="ip-glass ip-glass-strong rounded-[3.2rem] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.16)]">
 					<div className="relative mx-auto w-[320px] sm:w-[350px] md:w-[380px] lg:w-[400px] h-[680px] sm:h-[740px] md:h-[800px] lg:h-[840px] rounded-[3.4rem] bg-zinc-950 p-[12px] shadow-[0_40px_110px_rgba(0,0,0,0.22)]">
 						{/* Side buttons */}
 						<div className="pointer-events-none absolute -left-[7px] top-[170px] h-14 w-[5px] rounded-full bg-zinc-900/80" />
@@ -48,7 +47,6 @@ export function IphoneDemo(props: {
 						<div className="pointer-events-none absolute -left-[7px] top-[297px] h-11 w-[5px] rounded-full bg-zinc-900/80" />
 						<div className="pointer-events-none absolute -right-[7px] top-[225px] h-20 w-[5px] rounded-full bg-zinc-900/80" />
 
-						{/* Screen fills device */}
 						<div className="relative h-full overflow-hidden rounded-[2.85rem] bg-white">
 							{/* background */}
 							<div className="absolute inset-0">
@@ -81,7 +79,6 @@ export function IphoneDemo(props: {
 
 							{/* content canvas */}
 							<div className="relative px-6 pb-6">
-								{/* ✅ canvas height derived from device height: stable */}
 								<div className="relative h-[470px] sm:h-[520px] md:h-[560px] lg:h-[590px]">
 									<StackedScreen isActive={show.landing} mounted={mounted}>
 										<ScreenCard
@@ -107,7 +104,10 @@ export function IphoneDemo(props: {
 												<ChoiceButton label={`${q.left.emoji} ${q.left.label}`} onClick={() => props.onPick("A")} tint="accent" />
 												<ChoiceButton label={`${q.right.emoji} ${q.right.label}`} onClick={() => props.onPick("B")} tint="primary" />
 											</div>
-											<button onClick={props.onRestart} className="mt-4 w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-900 active:scale-[0.99]">
+											<button
+												onClick={props.onRestart}
+												className="mt-4 w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-900 active:scale-[0.99]"
+											>
 												Revenir
 											</button>
 										</ScreenCard>
@@ -117,10 +117,16 @@ export function IphoneDemo(props: {
 										<ScreenCard title="Bravo." subtitle="Vous venez de faire votre premier inPulse." footer="un signal partagé">
 											<div className="mt-4 space-y-3">
 												<p className="text-sm leading-relaxed text-zinc-700">Écouter ≠ agir. Mesurer ≠ décider.</p>
-												<button onClick={props.onShowResults} className="w-full rounded-2xl bg-zinc-950 px-4 py-3 text-sm font-medium text-white active:scale-[0.99]">
+												<button
+													onClick={props.onShowResults}
+													className="w-full rounded-2xl bg-zinc-950 px-4 py-3 text-sm font-medium text-white active:scale-[0.99]"
+												>
 													Accéder au résultat
 												</button>
-												<button onClick={props.onRestart} className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-900 active:scale-[0.99]">
+												<button
+													onClick={props.onRestart}
+													className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-900 active:scale-[0.99]"
+												>
 													Refaire un inPulse
 												</button>
 											</div>
@@ -132,7 +138,10 @@ export function IphoneDemo(props: {
 											<div className="mt-5 rounded-2xl border border-zinc-200 bg-white p-4">
 												<div className="text-xs font-medium text-zinc-700">Agrégation</div>
 												<div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-zinc-100">
-													<div className="h-2 w-[45%] rounded-full bg-[hsl(var(--ip-primary))]" style={{ animation: "inpulsebar 1.2s ease-in-out infinite" }} />
+													<div
+														className="h-2 w-[45%] rounded-full bg-[hsl(var(--ip-primary))]"
+														style={{ animation: "inpulsebar 1.2s ease-in-out infinite" }}
+													/>
 												</div>
 											</div>
 										</ScreenCard>
@@ -145,12 +154,6 @@ export function IphoneDemo(props: {
 								<div className="h-1.5 w-28 rounded-full bg-zinc-900/15" />
 							</div>
 						</div>
-					</div>
-
-					<div className="mt-4 text-center text-xs text-zinc-700">
-						<span className="rounded-full border border-white/30 bg-white/30 px-3 py-1 backdrop-blur-xl">
-							Touchez l’écran pour commencer
-						</span>
 					</div>
 				</div>
 			</div>
@@ -175,12 +178,12 @@ function Dot() { return <span className="inline-block h-1.5 w-1.5 rounded-full b
 
 function ScreenCard(props: { title: string; subtitle: string; footer: string; children: React.ReactNode; }) {
 	return (
-		<div className="relative rounded-[1.9rem] border border-white/35 bg-white/55 p-5 backdrop-blur-xl shadow-[0_18px_60px_rgba(0,0,0,0.10)]">
-			<div className="text-xl font-medium text-zinc-600">inPulse</div>
+		<div className="ip-glass-mini p-5">
+			<div className="text-xl font-medium text-zinc-700">inPulse</div>
 			<div className="mt-1 text-lg font-semibold tracking-tight text-zinc-950">{props.title}</div>
-			<div className="mt-1 text-sm text-zinc-700/80">{props.subtitle}</div>
+			<div className="mt-1 text-sm text-zinc-700/85">{props.subtitle}</div>
 			<div className="mt-4">{props.children}</div>
-			<div className="mt-4 text-[11px] text-zinc-600">{props.footer}</div>
+			<div className="mt-4 text-[11px] text-zinc-700">{props.footer}</div>
 		</div>
 	);
 }
