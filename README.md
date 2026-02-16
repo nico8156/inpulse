@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# inPulse — Landing site
 
-## Getting Started
+Site vitrine et expérientiel d’**inPulse**, un produit d’écoute contextuelle qui mesure, de manière anonyme et sur une courte période, le ressenti réel d’un collectif dans un lieu donné.
 
-First, run the development server:
+Ce site a un double rôle :
+- présenter clairement la philosophie et les principes d’inPulse,
+- permettre de **vivre un premier inPulse en direct** via une démo interactive.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🫀 Qu’est-ce qu’inPulse ?
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**inPulse n’est pas un outil de décision ni de communication.**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+C’est un **capteur neutre de ressenti collectif** :
+- contextuel (lieu / moment),
+- temporel (période courte, généralement 7 jours),
+- anonyme par design,
+- volontairement simple (3 à 5 questions, réponses en quelques secondes).
 
-## Learn More
+Il remplace les impressions diffuses par un **signal clair**, sans créer de dette d’écoute ni de promesse implicite.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 Objectifs du site
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Exprimer la promesse d’inPulse de manière simple et honnête
+- Donner à voir (et à ressentir) l’expérience via une démo interactive
+- Servir de point d’entrée vers :
+  - les principes du produit,
+  - le fonctionnement,
+  - la prise de contact / booking d’un inPulse réel
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧱 Structure du site
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Le site est construit comme une suite de **sections plein écran** :
+
+1. **Hero**  
+   Présentation du produit, promesse, CTA principal
+
+2. **Démo / Test en direct**  
+   Simulation d’un inPulse via une interface iPhone interactive
+
+3. **Principes**  
+   Ce qu’inPulse est — et surtout ce qu’il n’est pas
+
+4. **Comment ça marche**  
+   Mise en place simple, cadre clair, résultat lisible
+
+5. **Booking**  
+   Lancer un inPulse réel (prise de contact)
+
+La navigation est pensée pour être fluide, lisible et orientée “signal”.
+
+---
+
+## 🛠️ Stack technique
+
+- **Next.js (App Router)**
+- **TypeScript**
+- **React**
+- **Tailwind CSS**
+- Animations CSS légères (sans librairie lourde)
+- Déploiement prévu : **Vercel**
+
+---
+
+## 🧠 Principes de conception
+
+- Simplicité radicale
+- Peu de composants, mais bien travaillés
+- Priorité à la lisibilité et au rythme
+- Pas d’effets gratuits ou décoratifs
+- Design au service du sens, pas l’inverse
+
+---
+
+## 🚧 État du projet
+
+- Landing page fonctionnelle
+- Démo interactive intégrée
+- Design et navigation en phase de polish continu
+
+Le site évoluera avec :
+- l’ajout d’une page “résultats” plus détaillée,
+- l’affinage du micro-copy,
+- l’intégration progressive avec le produit réel.
+
+---
+
+## 📄 Licence
+
+Ce projet est privé et non open-source.  
+Tous droits réservés.
+
+---
+
+## ✉️ Contact
+
+Pour toute question liée au produit ou au site :  
+👉 via le formulaire de contact / booking intégré au site.
