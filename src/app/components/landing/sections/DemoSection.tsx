@@ -37,28 +37,28 @@ function useInView(ref: React.RefObject<HTMLElement>, opts?: { threshold?: numbe
 }
 
 /**
- * Small fade swap: smooths text changes without extra libs.
+ * Same pattern as IphoneDemo screens
+ * but opacity-only (no translate, no oscillation)
  */
-function FadeSwap({ children, swapKey }: { children: React.ReactNode; swapKey: string }) {
-	const [renderKey, setRenderKey] = useState(swapKey);
-	const [phase, setPhase] = useState<"in" | "out">("in");
-
-	useEffect(() => {
-		if (swapKey === renderKey) return;
-
-		setPhase("out");
-		const t = window.setTimeout(() => {
-			setRenderKey(swapKey);
-			setPhase("in");
-		}, 160);
-
-		return () => window.clearTimeout(t);
-	}, [swapKey, renderKey]);
-
+function CopyLayer({
+	isActive,
+	mounted,
+	children,
+}: {
+	isActive: boolean;
+	mounted: boolean;
+	children: React.ReactNode;
+}) {
 	return (
-		<div className={phase === "in" ? "ip-swap ip-swap-in" : "ip-swap ip-swap-out"}>
-			{/* renderKey is used to force DOM replacement for a clean fade */}
-			<div key={renderKey}>{children}</div>
+		<div
+			className={[
+				"absolute inset-0",
+				mounted ? "ip-copy-fade" : "ip-copy-noanim",
+				isActive ? "ip-copy-on" : "ip-copy-off",
+				isActive ? "pointer-events-auto" : "pointer-events-none",
+			].join(" ")}
+		>
+			{children}
 		</div>
 	);
 }
@@ -81,7 +81,9 @@ export default function DemoSection() {
 	const [step, setStep] = useState<Step>("landing");
 	const [choice, setChoice] = useState<Choice | null>(null);
 
-	// Auto-return to landing after processing (keeps it alive but simple)
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => setMounted(true), []);
+
 	useEffect(() => {
 		if (step !== "processing") return;
 		const t = window.setTimeout(() => {
@@ -121,13 +123,38 @@ export default function DemoSection() {
 		[]
 	);
 
-	const copy = copyByStep[step];
+	const renderCopy = (k: Step) => {
+		const copy = copyByStep[k];
+		return (
+			<div className="max-w-xl">
+				<div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/12 px-3 py-1 text-[11px] text-zinc-700 ip-glass ip-glass-header">
+					<span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--ip-accent)/0.65)]" />
+					{copy.eyebrow}
+				</div>
+
+				<h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-950">
+					{copy.title}
+				</h2>
+
+				<p className="mt-2 text-base sm:text-lg text-zinc-700/90">
+					{copy.subtitle}
+				</p>
+
+				<div className="mt-5 flex items-center gap-2 text-sm text-zinc-700">
+					<span className="inline-flex h-7 items-center rounded-full border border-zinc-200 bg-white/70 px-3 text-[12px]">
+						{copy.hint}
+					</span>
+				</div>
+			</div>
+		);
+	};
 
 	return (
 		<section
 			ref={sectionRef}
 			id="demo"
-			className="relative h-screen snap-start [scroll-snap-stop:always] overflow-hidden"
+			className="relative h-screen snap-start overflow-hidden"
+			style={{ scrollSnapStop: "normal" }}
 		>
 			<div className="h-full flex flex-col px-6">
 				<div className="h-16" />
@@ -135,39 +162,21 @@ export default function DemoSection() {
 				<div className="flex-1 flex items-center justify-center">
 					<div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-[1fr_auto] items-center gap-10">
 						{/* Left column */}
-						<div className="max-w-xl">
-							<FadeSwap swapKey={step}>
-								<div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/12 px-3 py-1 text-[11px] text-zinc-700 ip-glass ip-glass-header">
-									<span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--ip-accent)/0.65)]" />
-									{copy.eyebrow}
-								</div>
-
-								<h2 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-950">
-									{copy.title}
-								</h2>
-
-								<p className="mt-2 text-base sm:text-lg text-zinc-700/90">
-									{copy.subtitle}
-								</p>
-
-								<div className="mt-5 flex items-center gap-2 text-sm text-zinc-700">
-									<span className="inline-flex h-7 items-center rounded-full border border-zinc-200 bg-white/70 px-3 text-[12px]">
-										{copy.hint}
-									</span>
-								</div>
-							</FadeSwap>
-
-							{step !== "landing" && (
-								<button
-									onClick={() => {
-										setChoice(null);
-										setStep("landing");
-									}}
-									className="mt-4 inline-flex items-center rounded-full border border-zinc-200 bg-white/70 px-4 py-2 text-sm font-medium text-zinc-900 active:scale-[0.99]"
-								>
-									Réinitialiser
-								</button>
-							)}
+						<div className="relative">
+							<div className="relative min-h-[220px] sm:min-h-[240px]">
+								<CopyLayer isActive={step === "landing"} mounted={mounted}>
+									{renderCopy("landing")}
+								</CopyLayer>
+								<CopyLayer isActive={step === "question"} mounted={mounted}>
+									{renderCopy("question")}
+								</CopyLayer>
+								<CopyLayer isActive={step === "bravo"} mounted={mounted}>
+									{renderCopy("bravo")}
+								</CopyLayer>
+								<CopyLayer isActive={step === "processing"} mounted={mounted}>
+									{renderCopy("processing")}
+								</CopyLayer>
+							</div>
 						</div>
 
 						{/* Phone */}
@@ -200,41 +209,6 @@ export default function DemoSection() {
 				</div>
 
 				<div className="h-16" />
-			</div>
-
-			{/* Scroll indicator + optional buttons */}
-			<div className="pointer-events-none absolute inset-x-0 bottom-6 flex items-center justify-center">
-				<div className="pointer-events-auto ip-scroll-pod">
-					<button
-						type="button"
-						aria-label="Section précédente"
-						className="ip-scroll-btn"
-						onClick={() => {
-							if (!sectionRef.current) return;
-							scrollToSiblingSection(sectionRef.current, -1);
-						}}
-					>
-						<span className="ip-scroll-chev">⌃</span>
-					</button>
-
-					<div className="ip-scroll-hint" aria-hidden="true">
-						<span className="ip-scroll-dot" />
-						<span className="ip-scroll-dot" />
-						<span className="ip-scroll-dot" />
-					</div>
-
-					<button
-						type="button"
-						aria-label="Section suivante"
-						className="ip-scroll-btn"
-						onClick={() => {
-							if (!sectionRef.current) return;
-							scrollToSiblingSection(sectionRef.current, +1);
-						}}
-					>
-						<span className="ip-scroll-chev">⌄</span>
-					</button>
-				</div>
 			</div>
 		</section>
 	);

@@ -11,7 +11,14 @@
 }
 
 html, body { height: 100%; }
-html { scroll-behavior: smooth; }
+
+/* ✅ Snap smooth: guided */
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 64px;
+  scroll-padding-bottom: 32px;
+}
 
 body {
   background: hsl(var(--ip-paper));
@@ -225,132 +232,30 @@ body {
 }
 
 /* -------------------------------------------------------
-   ✅ Demo iPhone dock — matches SiteBackground wash + halos
+   ✅ Copy stack transitions (aligned with iPhone screens)
 -------------------------------------------------------- */
 
-@keyframes ip-demo-dock-breathe {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(3px); }
-  100% { transform: translateY(0); }
-}
-
-.ip-demo-dock{
-  position: relative;
-  border-radius: 3.2rem;
-  padding: 18px;
-  overflow: hidden;
-
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.42);
-
-  backdrop-filter: blur(28px) saturate(170%);
-  -webkit-backdrop-filter: blur(28px) saturate(170%);
-
-  box-shadow:
-    0 30px 110px rgba(0,0,0,0.16),
-    inset 0 1px 0 rgba(255,255,255,0.65);
-
-  outline: 1px solid rgba(255,255,255,0.18);
-  outline-offset: -1px;
-}
-
-.ip-demo-dock__wash{
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to bottom,
-    rgba(255,255,255,0.86),
-    rgba(255,255,255,0.72),
-    rgba(255,255,255,0.92)
-  );
-  opacity: 0.40;
-}
-
-.ip-demo-dock__halo{
-  position: absolute;
-  pointer-events: none;
-  border-radius: 9999px;
-  filter: blur(48px);
-  opacity: 0.85;
-}
-
-.ip-demo-dock__halo--left{
-  left: 6%;
-  top: 10%;
-  height: 520px;
-  width: 520px;
-  background: hsl(var(--ip-primary) / 0.10);
-}
-
-.ip-demo-dock__halo--right{
-  right: 6%;
-  top: 18%;
-  height: 520px;
-  width: 520px;
-  background: hsl(var(--ip-accent) / 0.08);
-}
-
-.ip-demo-dock__inner{
-  position: relative;
-  border-radius: inherit;
-  animation: ip-demo-dock-breathe 5.8s ease-in-out infinite;
-}
-
-.ip-demo-dock::before{
-  content:"";
-  position:absolute;
-  inset:-2px;
-  border-radius: inherit;
-  pointer-events:none;
-
-  background:
-    radial-gradient(90% 80% at 18% 18%,
-      rgba(255,255,255,0.42),
-      transparent 55%),
-    linear-gradient(
-      90deg,
-      hsl(var(--ip-primary) / 0.22),
-      hsl(var(--ip-accent) / 0.18),
-      hsl(var(--ip-secondary) / 0.16),
-      hsl(var(--ip-primary) / 0.22)
-    );
-  filter: blur(10px);
-  opacity: 0.55;
-}
-
-.ip-demo-dock::after{
-  content:"";
-  position:absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events:none;
-  background: radial-gradient(70% 60% at 50% 110%,
-    rgba(0,0,0,0.22),
-    transparent 65%);
-  opacity: 0.55;
-}
-
-/* -------------------------------------------------------
-   ✅ Fade swap for left column
--------------------------------------------------------- */
-
-.ip-swap{
-  transition: opacity 220ms ease, transform 220ms ease;
+.ip-copy-layer-anim{
+  transition: opacity 520ms ease-out, transform 520ms ease-out;
   will-change: opacity, transform;
 }
 
-.ip-swap-in{
+.ip-copy-layer-noanim{
+  transition: none;
+}
+
+.ip-copy-layer-on{
   opacity: 1;
   transform: translateY(0);
 }
 
-.ip-swap-out{
+.ip-copy-layer-off{
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateY(6px); /* tiny, no oscillation */
 }
 
 /* -------------------------------------------------------
-   ✅ Scroll pod: indicator + prev/next buttons
+   ✅ Scroll pod (no dots)
 -------------------------------------------------------- */
 
 .ip-scroll-pod{
@@ -396,18 +301,55 @@ body {
   transform: translateY(-1px);
 }
 
-.ip-scroll-hint{
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 4px;
-  animation: ip-float 2.9s ease-in-out infinite;
+.ip-scroll-chev--up{
+  animation: ip-float 3.2s ease-in-out infinite;
 }
 
-.ip-scroll-dot{
-  height: 5px;
-  width: 5px;
+.ip-scroll-chev--down{
+  animation: ip-float 3.2s ease-in-out infinite;
+  animation-delay: 0.6s;
+}
+
+.ip-scroll-track{
+  width: 46px;
+  height: 10px;
   border-radius: 9999px;
-  background: rgba(24,24,27,0.24);
+  background: rgba(24,24,27,0.06);
+  border: 1px solid rgba(24,24,27,0.06);
+  overflow: hidden;
+}
+
+.ip-scroll-track__thumb{
+  height: 100%;
+  width: 34%;
+  border-radius: 9999px;
+  background: rgba(24,24,27,0.16);
+  animation: ip-track 2.8s ease-in-out infinite;
+}
+
+@keyframes ip-track{
+  0%   { transform: translateX(-10%); opacity: 0.55; }
+  50%  { transform: translateX(130%); opacity: 0.95; }
+  100% { transform: translateX(-10%); opacity: 0.55; }
+}
+/* -------------------------------------------------------
+   ✅ Copy fade — opacity only (no oscillation, no overlap)
+-------------------------------------------------------- */
+
+.ip-copy-fade{
+  transition: opacity 220ms ease-out;
+  will-change: opacity;
+}
+
+.ip-copy-noanim{
+  transition: none;
+}
+
+.ip-copy-on{
+  opacity: 1;
+}
+
+.ip-copy-off{
+  opacity: 0;
 }
 
