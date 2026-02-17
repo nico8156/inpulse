@@ -13,6 +13,7 @@ export type DemoQuestion = {
 };
 
 export function IphoneDemo(props: {
+	visible?: boolean;
 	step: Step;
 	choice: Choice | null;
 	question: DemoQuestion;
@@ -39,8 +40,12 @@ export function IphoneDemo(props: {
 	return (
 		<div className="mx-auto w-full">
 			<div className="flex justify-center">
-				{/* ✅ Softer dock that matches SiteBackground language */}
-				<div className="ip-demo-dock">
+				<div
+					className={[
+						"ip-demo-dock transition-all duration-500 ease-out",
+						props.visible === false ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0",
+					].join(" ")}
+				>
 					<div className="ip-demo-dock__wash" />
 					<div className="ip-demo-dock__halo ip-demo-dock__halo--left" />
 					<div className="ip-demo-dock__halo ip-demo-dock__halo--right" />
@@ -216,7 +221,7 @@ function StackedScreen({
 	return (
 		<div
 			className={[
-				"absolute inset-0 transition-all duration-300 ease-out",
+				"absolute inset-0 transition-all duration-400 ease-out will-change-transform will-change-opacity",
 				isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
 				mounted ? "" : "transition-none",
 				isActive ? "pointer-events-auto" : "pointer-events-none",

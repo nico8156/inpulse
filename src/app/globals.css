@@ -329,3 +329,85 @@ body {
     transparent 65%);
   opacity: 0.55;
 }
+
+/* -------------------------------------------------------
+   ✅ Fade swap for left column
+-------------------------------------------------------- */
+
+.ip-swap{
+  transition: opacity 220ms ease, transform 220ms ease;
+  will-change: opacity, transform;
+}
+
+.ip-swap-in{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ip-swap-out{
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* -------------------------------------------------------
+   ✅ Scroll pod: indicator + prev/next buttons
+-------------------------------------------------------- */
+
+.ip-scroll-pod{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 8px 10px;
+  border-radius: 9999px;
+
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.40);
+
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+
+  box-shadow:
+    0 18px 60px rgba(0,0,0,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.60);
+}
+
+.ip-scroll-btn{
+  height: 34px;
+  width: 34px;
+  border-radius: 9999px;
+
+  border: 1px solid rgba(24,24,27,0.10);
+  background: rgba(255,255,255,0.70);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 150ms ease, opacity 200ms ease;
+}
+
+.ip-scroll-btn:active{ transform: scale(0.98); }
+
+.ip-scroll-chev{
+  font-size: 14px;
+  line-height: 1;
+  color: rgba(24,24,27,0.72);
+  transform: translateY(-1px);
+}
+
+.ip-scroll-hint{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  animation: ip-float 2.9s ease-in-out infinite;
+}
+
+.ip-scroll-dot{
+  height: 5px;
+  width: 5px;
+  border-radius: 9999px;
+  background: rgba(24,24,27,0.24);
+}
+
