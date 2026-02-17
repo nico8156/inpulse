@@ -36,10 +36,6 @@ function useInView(ref: React.RefObject<HTMLElement>, opts?: { threshold?: numbe
 	return inView;
 }
 
-/**
- * Same pattern as IphoneDemo screens
- * but opacity-only (no translate, no oscillation)
- */
 function CopyLayer({
 	isActive,
 	mounted,
@@ -63,35 +59,49 @@ function CopyLayer({
 	);
 }
 
-function scrollToSiblingSection(current: HTMLElement, dir: -1 | 1) {
-	const all = Array.from(document.querySelectorAll<HTMLElement>("section[id]"));
-	const idx = all.findIndex((s) => s === current);
-	if (idx < 0) return;
-
-	const target = all[idx + dir];
-	if (!target) return;
-
-	target.scrollIntoView({ behavior: "smooth", block: "start" });
+function PanelLayer({
+	isActive,
+	mounted,
+	children,
+}: {
+	isActive: boolean;
+	mounted: boolean;
+	children: React.ReactNode;
+}) {
+	return (
+		<div
+			className={[
+				"absolute inset-0 flex items-center justify-center",
+				mounted ? "ip-panel-fade" : "ip-panel-noanim",
+				isActive ? "ip-panel-on" : "ip-panel-off",
+				isActive ? "pointer-events-auto" : "pointer-events-none",
+			].join(" ")}
+		>
+			{children}
+		</div>
+	);
 }
+
+type DemoMode = "demo" | "results";
 
 export default function DemoSection() {
 	const sectionRef = useRef<HTMLElement | null>(null);
 	const inView = useInView(sectionRef as React.RefObject<HTMLElement>, { threshold: 0.55 });
 
-	const [step, setStep] = useState<Step>("landing");
-	const [choice, setChoice] = useState<Choice | null>(null);
-
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => setMounted(true), []);
 
+	const [mode, setMode] = useState<DemoMode>("demo");
+	const [step, setStep] = useState<Step>("landing");
+	const [choice, setChoice] = useState<Choice | null>(null);
+
+	// reset when leaving section
 	useEffect(() => {
-		if (step !== "processing") return;
-		const t = window.setTimeout(() => {
-			setChoice(null);
-			setStep("landing");
-		}, 1600);
-		return () => window.clearTimeout(t);
-	}, [step]);
+		if (inView) return;
+		setMode("demo");
+		setChoice(null);
+		setStep("landing");
+	}, [inView]);
 
 	const copyByStep: Record<Step, CopyModel> = useMemo(
 		() => ({
@@ -173,36 +183,61 @@ export default function DemoSection() {
 								<CopyLayer isActive={step === "bravo"} mounted={mounted}>
 									{renderCopy("bravo")}
 								</CopyLayer>
-								<CopyLayer isActive={step === "processing"} mounted={mounted}>
-									{renderCopy("processing")}
-								</CopyLayer>
 							</div>
 						</div>
 
-						{/* Phone */}
+						{/* Right column */}
 						<div className="flex justify-center lg:justify-end">
-							<div
-								className={[
-									"scale-[0.92] sm:scale-[0.95] transition-opacity duration-500 ease-out",
-									inView ? "opacity-100" : "opacity-0",
-								].join(" ")}
-							>
-								<IphoneDemo
-									visible={inView}
-									step={step}
-									choice={choice}
-									question={QUESTION}
-									onStart={() => setStep("question")}
-									onPick={(c) => {
-										setChoice(c);
-										setStep("bravo");
-									}}
-									onShowResults={() => setStep("processing")}
-									onRestart={() => {
-										setChoice(null);
-										setStep("landing");
-									}}
-								/>
+							<div className="relative w-[360px] sm:w-[400px] md:w-[420px] lg:w-[440px] h-[720px] sm:h-[780px] md:h-[820px] lg:h-[860px]">
+								{/* iPhone */}
+								<PanelLayer isActive={mode === "demo" && inView} mounted={mounted}>
+									<IphoneDemo
+										visible={inView}
+										step={step}
+										choice={choice}
+										question={QUESTION}
+										onStart={() => setStep("question")}
+										onPick={(c) => {
+											setChoice(c);
+											setStep("bravo");
+										}}
+										onShowResults={() => setMode("results")}
+										onRestart={() => {
+											setMode("demo");
+											setChoice(null);
+											setStep("landing");
+										}}
+									/>
+								</PanelLayer>
+
+								{/* Results */}
+								<PanelLayer isActive={mode === "results" && inView} mounted={mounted}>
+									<div className="ip-results-card">
+										<div className="ip-results-card__inner flex flex-col">
+											{/* Header */}
+											<div className="flex items-center justify-between px-5 py-4 border-b border-zinc-200/60">
+												<div className="text-sm font-medium text-zinc-900">
+													Signal <span className="text-zinc-500">(démo)</span>
+												</div>
+												<button
+													onClick={() => {
+														setMode("demo");
+														setChoice(null);
+														setStep("landing");
+													}}
+													className="text-sm text-zinc-600 hover:text-zinc-900"
+												>
+													Retour
+												</button>
+											</div>
+
+											{/* Empty body (placeholder) */}
+											<div className="flex-1 flex items-center justify-center text-sm text-zinc-500">
+												Résultat collectif à venir
+											</div>
+										</div>
+									</div>
+								</PanelLayer>
 							</div>
 						</div>
 					</div>
