@@ -1,3 +1,5 @@
+![CI](https://github.com/nico8156/inpulse/actions/workflows/ci.yml/badge.svg)
+
 # inPulse — Landing site
 
 Site vitrine et expérientiel d’**inPulse**, un produit d’écoute contextuelle qui mesure, de manière anonyme et sur une courte période, le ressenti réel d’un collectif dans un lieu donné.

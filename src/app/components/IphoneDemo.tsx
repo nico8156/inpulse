@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useSyncExternalStore } from "react";
 
 export type Step = "landing" | "question" | "bravo" | "processing";
 export type Choice = "A" | "B";
@@ -11,6 +11,14 @@ export type DemoQuestion = {
 	left: { label: string; emoji: string };
 	right: { label: string; emoji: string };
 };
+
+function useIsClient() {
+	return useSyncExternalStore(
+		() => () => { }, // subscribe noop
+		() => true, // client snapshot
+		() => false // server snapshot
+	);
+}
 
 export function IphoneDemo(props: {
 	visible?: boolean;
@@ -24,8 +32,8 @@ export function IphoneDemo(props: {
 }) {
 	const { step, question: q } = props;
 
-	const [mounted, setMounted] = useState(false);
-	useEffect(() => setMounted(true), []);
+	// Replaces mounted state + effect (eslint-friendly)
+	const mounted = useIsClient();
 
 	const show = useMemo(
 		() => ({
@@ -113,11 +121,7 @@ export function IphoneDemo(props: {
 												</div>
 											</ScreenCard>
 
-											<button
-												onClick={props.onStart}
-												aria-label="Commencer"
-												className="absolute inset-0"
-											/>
+											<button onClick={props.onStart} aria-label="Commencer" className="absolute inset-0" />
 										</StackedScreen>
 
 										<StackedScreen isActive={show.question} mounted={mounted}>
@@ -148,11 +152,7 @@ export function IphoneDemo(props: {
 										</StackedScreen>
 
 										<StackedScreen isActive={show.bravo} mounted={mounted}>
-											<ScreenCard
-												title="Bravo."
-												subtitle="Votre inPulse est envoyé."
-												footer="un signal partagé"
-											>
+											<ScreenCard title="Bravo." subtitle="Votre inPulse est envoyé." footer="un signal partagé">
 												<div className="mt-4 space-y-3">
 													<p className="text-sm leading-relaxed text-zinc-700">
 														Écouter ≠ agir.
@@ -176,11 +176,7 @@ export function IphoneDemo(props: {
 										</StackedScreen>
 
 										<StackedScreen isActive={show.processing} mounted={mounted}>
-											<ScreenCard
-												title="Calcul du signal…"
-												subtitle="Agrégation en cours (démo)."
-												footer="quelques secondes"
-											>
+											<ScreenCard title="Calcul du signal…" subtitle="Agrégation en cours (démo)." footer="quelques secondes">
 												<div className="mt-5 rounded-2xl border border-zinc-200 bg-white p-4">
 													<div className="text-xs font-medium text-zinc-700">Agrégation</div>
 													<div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-zinc-100">
@@ -245,9 +241,7 @@ function ScreenCard(props: {
 	return (
 		<div className="ip-glass-mini p-5">
 			<div className="text-xl font-medium text-zinc-700">inPulse</div>
-			<div className="mt-1 text-lg font-semibold tracking-tight text-zinc-950">
-				{props.title}
-			</div>
+			<div className="mt-1 text-lg font-semibold tracking-tight text-zinc-950">{props.title}</div>
 			<div className="mt-1 text-sm text-zinc-700/85">{props.subtitle}</div>
 			<div className="mt-4">{props.children}</div>
 			<div className="mt-4 text-[11px] text-zinc-700">{props.footer}</div>
@@ -255,11 +249,7 @@ function ScreenCard(props: {
 	);
 }
 
-function ChoiceButton(props: {
-	label: string;
-	onClick: () => void;
-	tint: "primary" | "accent";
-}) {
+function ChoiceButton(props: { label: string; onClick: () => void; tint: "primary" | "accent" }) {
 	const glow =
 		props.tint === "accent"
 			? "bg-[hsl(var(--ip-accent)/0.20)]"
@@ -270,9 +260,7 @@ function ChoiceButton(props: {
 			onClick={props.onClick}
 			className="group relative w-full overflow-hidden rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-left active:scale-[0.99]"
 		>
-			<div
-				className={`absolute -left-10 top-1/2 h-24 w-24 -translate-y-1/2 rounded-full blur-2xl ${glow}`}
-			/>
+			<div className={`absolute -left-10 top-1/2 h-24 w-24 -translate-y-1/2 rounded-full blur-2xl ${glow}`} />
 			<div className="relative flex items-center justify-between">
 				<div className="text-base font-semibold text-zinc-950">{props.label}</div>
 				<div className="h-2 w-2 rounded-full bg-zinc-900/20 opacity-0 transition group-hover:opacity-100" />
@@ -281,4 +269,3 @@ function ChoiceButton(props: {
 		</button>
 	);
 }
-
