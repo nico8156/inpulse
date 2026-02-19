@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.com.nico8156.inpulseApp",
+        "paths": [ "/p/*" ]
+      }
+    ]
+  }
+}
+
